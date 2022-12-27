@@ -2,6 +2,7 @@ package com.pluralsight.blog.data;
 
 import com.pluralsight.blog.model.Author;
 import com.pluralsight.blog.model.Post;
+import com.pluralsight.blog.data.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -21,8 +22,12 @@ public class DatabaseLoader implements ApplicationRunner {
     public List<Post> randomPosts = new ArrayList<>();
     public List<Author> authors = new ArrayList<>();
 
-    public DatabaseLoader() {
+    @Autowired
+    public DatabaseLoader(PostRepository postRepo) {
+        this.postRepository = postRepo;
     }
+
+    private final PostRepository postRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -34,5 +39,8 @@ public class DatabaseLoader implements ApplicationRunner {
             Post post = new Post(title, "Lorem ipsum dolor sit amet, consectetur adipiscing elit… ");
             randomPosts.add(post);
         });
+
+        // Save post to data repository
+        postRepository.saveAll(this.randomPosts);
     }
 }
